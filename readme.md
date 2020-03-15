@@ -12,7 +12,7 @@
 
 Normal usage
 ```sh
-python index.py
+python xmlparse.py
 
 You gotta change the name of the dae in the python file (sorry! im too lazy to add cmd line support)
 ```
@@ -20,7 +20,7 @@ You gotta change the name of the dae in the python file (sorry! im too lazy to a
 ## Run tests
 
 ```sh
-python convert.py
+python xmlparse.py
 ```
 
 ## Author
