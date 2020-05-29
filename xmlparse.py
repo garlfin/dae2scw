@@ -1,11 +1,14 @@
 import index
 import xml.etree.ElementTree as ET
 import numpy as np
-from squaternion import euler2quat, quat2euler, Quaternion
+from squaternion import *
+import math
 f = open("demofile2.txt", "a")
 f.truncate(0)
 
-tree = ET.parse("models/tvcute.dae")
+print('Type the name of the file to convert')
+name = input()
+tree = ET.parse("dae/" + name)
 root = tree.getroot()
 # print(root)
 index.head()
@@ -113,19 +116,29 @@ parent_map = dict((c, p) for p in tree.iter() for c in p)
 def getAllChildren(startPoint):
     for o in startPoint:
         if o.get('type') == 'JOINT':
-            scale = list(map(float, o[0].text.split()))
-            pos = list(map(float, o[4].text.split()))
-            rot1 = list(map(float, o[1].text.split()))
-            rot2 = list(map(float, o[2].text.split()))
-            rot3 = list(map(float, o[3].text.split()))
-
-            rotx = rot3[3]
-            roty = rot2[3]
-            rotz = rot1[3]
-            #print(rotx,' ',roty,' ',rotz)
+            matrix = list(map(float, o[0].text.split()))
+            #pos = list(map(float, o[0].text.split()))
+            posX = float(matrix[3])
+            posY = float(matrix[7])
+            posZ = float(matrix[11])
+            
+            scaleX = 1
+            scaleY = 1
+            scaleZ = 1
+            #pos = list(map(float, o[4].text.split()))
+            #rot = list(map(str, o[1].text.split()))
+            #rot2 = list(map(float, o[2].text.split()))
+            #rot3 = list(map(float, o[3].text.split()))
+            #rotx = math.ceil(float(math.cos(matrix[5]) + math.sin(-matrix[6]) + math.sin(matrix[9]) + math.cos(matrix[10])))
+            #roty = math.ceil(float(math.cos(matrix[0]) + math.sin(-matrix[2]) + math.sin(matrix[8]) + math.cos(matrix[10])))
+            #rotz = math.ceil(float(math.cos(matrix[0]) + math.sin(-matrix[1]) + math.sin(matrix[4]) + math.cos(matrix[5])))
+            rotx = matrix[0] + matrix[4] + matrix[8]
+            roty = matrix[1] + matrix[5] + matrix[9]
+            rotz = matrix[2] + matrix[6] + matrix[10]
+            print(rotx,' ',roty,' ',rotz)
 
             q = euler2quat(rotz, roty, rotx, degrees=True)
-            print(q[1],' ', q[2], ' ', q[3], ' ',q[0], ' ', pos[0])
+            print(q[1],' ', q[2], ' ', q[3], ' ',q[0])
 
             #print(scale)
             #rint(parent_map[o].get('sid'))
@@ -133,8 +146,8 @@ def getAllChildren(startPoint):
                 classic = parent_map[o].get('name')
             else:
                 classic = parent_map[o].get('sid')
-            tempArray = [o.get('sid'), classic, q[1], q[2], q[3], q[0], pos[0], pos[1], pos[2], scale[0],
-                         scale[1], scale[2]]
+            tempArray = [o.get('sid'), classic, q[1], q[2], q[3], q[0], posX, posY, posZ, scaleX,
+                         scaleY, scaleZ]
             fullNodeArray.append(tempArray)
             getAllChildren(o)
 
@@ -142,18 +155,29 @@ def getAllChildren(startPoint):
 for cont in root.findall('{http://www.collada.org/2005/11/COLLADASchema}library_visual_scenes'):
     FirstBone = cont[0][0]
     if FirstBone.get('type') == 'NODE':
+    	#ПОСЛУШАЙ!! ЕСЛИ NODE БУДЕТ БЕЗ МАТРИЦЫ А JOINT С НЕЙ, ТО ТОГДА РАЗКОМЕНТЬ ЭТИ 3 rot И rot x y z !!!
+    	#В ДРУГОМ СЛУЧАЕ ЮЗАЙ ПОВОРОТ ИЗ JOINT СЮДА !!!
 
-        rot1 = list(map(float, FirstBone[1].text.split()))
-        rot2 = list(map(float, FirstBone[2].text.split()))
-        rot3 = list(map(float, FirstBone[3].text.split()))
+        #rot1 = list(map(float, FirstBone[1].text.split()))
+       # rot2 = list(map(float, FirstBone[2].text.split()))
+        #rot3 = list(map(float, FirstBone[3].text.split()))
+       # print(rot1, rot2, rot3)
 
-        rotx = rot3[3]
-        roty = rot2[3]
-        rotz = rot1[3]
-        # print(rotx,' ',roty,' ',rotz)
+       # rotx = rot3[3]
+      #  roty = rot2[3]
+        #rotz = rot1[3]
+        
+        #ЭТО МАТРИЦА NODE !!!
+        #matrix = list(map(float, FirstBone[0].text.split()))
+        
+        #rotx = matrix[0] + matrix[4] + matrix[8]
+        #roty = matrix[1] + matrix[5] + matrix[9]
+        #rotz = matrix[2] + matrix[6] + matrix[10]
+        
+       # print(rotx,' ',roty,' ',rotz)
 
-        q = euler2quat(rotz, roty, rotx, degrees=True)
-        tempArray = [FirstBone.get('name'), "", q[1], q[2], q[3], q[0], 0, 0, 0, 1, 1, 1]
+       # q = euler2quat(rotz, roty, rotx, degrees=True)
+        tempArray = [FirstBone.get('name'), "", 0, 0, 0, 0, 0, 0, 0, 1, 1, 1]
         # ROT X Y Z #POS X Y Z #SCALE X Y Z
         fullNodeArray.append(tempArray)
         getAllChildren(FirstBone)
@@ -163,3 +187,4 @@ for cont in root.findall('{http://www.collada.org/2005/11/COLLADASchema}library_
 index.node2(Allname, fullNodeArray)
 index.wend()
 f.close()
+print('DONE')
