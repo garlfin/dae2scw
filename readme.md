@@ -19,7 +19,7 @@ You gotta change the name of the dae in the python file (sorry! im too lazy to a
 
 Instructions for collada preperation:
 
-![image](https://i.imgur.com/4JMLrhT.png)
+![image](https://imgur.com/a/adai4RY)
 ## Run tests
 
 ```sh
