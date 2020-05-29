@@ -4,8 +4,16 @@ import binascii
 # SC3D - 53 43 33 44
 # Garlfin
 # Why put > in struct.pack? > signifies big endian.
-file = open("scw/dae.scw", "wb")
 
+
+
+def fileDec(name):
+    global path
+    path = "scw/" + name[:-3] + "scw"
+    global file
+    file = open(path, "wb")
+    
+    print(path)
 
 def head():
     headData = struct.pack('>4s', 'SC3D'.encode('utf-8'))
@@ -154,6 +162,7 @@ def wend():
     crc = binascii.crc32(wendData[4:])
     wendData += struct.pack('>I',crc)
     file.write(wendData)
+    print("done at " + path)
 
 #head()
 #geom("cool", [1, 2, 3, 3, 2, 1], [5, 5, 5, 5, 5, 1], [1, 2, 2, 3], [1, 1, 1, 1, 1, 1, 1, 1, 1])

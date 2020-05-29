@@ -9,6 +9,7 @@ f.truncate(0)
 print('Type the name of the file to convert')
 name = input()
 tree = ET.parse("dae/" + name)
+index.fileDec(name)
 root = tree.getroot()
 # print(root)
 index.head()
@@ -184,6 +185,7 @@ for cont in root.findall('{http://www.collada.org/2005/11/COLLADASchema}library_
 
 # f.write(g.get('name')," || ",g.find('..').get('name'))
 #print(fullNodeArray)
+
 index.node2(Allname, fullNodeArray)
 index.wend()
 f.close()
