@@ -1,7 +1,7 @@
 import index
 import xml.etree.ElementTree as ET
 import numpy as np
-from squaternion import *
+from squaternion import euler2quat, quat2euler, Quaternion
 import math
 f = open("demofile2.txt", "a")
 f.truncate(0)
