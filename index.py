@@ -50,16 +50,16 @@ def geom(name, v, vn, vt, tri,bindShapeMatrix,jointNames,jointValues,vertexWeigh
                             scalev, int(len(v) / 3))
     # USHORT STRINGLEN; CHAR[1] STRING; CHAR VERTEXGROUPS; USHORT STRINGLEN; CHAR[8] STRING; CHAR INDEX; USHORT SHORTSV; FLOAT SCALEV; UINT VERTEXCOUNT;
     for x in v:
-        geomData += struct.pack('>h', int(x * 32767 / scalev))
+        geomData += struct.pack('>h', int(x * 32512 / scalev))
         # SHORT VERTEX;
-        # Why x*32767/scalev? 32767 is the max size of an short(signed) and you gotta divide it by scalev to properly scale it(I guess)
+        # Why x*32512/scalev? 32512 is the max size of an short(signed) and you gotta divide it by scalev to properly scale it(I guess)
     scalevn = max(max(vn), abs(min(vn)))
     geomData += struct.pack('>H6sbHfI', 6, 'NORMAL'.encode('utf-8'), 1, 3, scalevn, int(len(vn) / 3))
     # SHORT STRINGLEN; CHAR[6] STRING; CHAR INDEX; USHORT SHORTSVN; FLOAT SCALEVN; UINT VERTEXNORMCOUNT;
     for x in vn:
-        geomData += struct.pack('>h', int(x * 32767 / scalevn))
+        geomData += struct.pack('>h', int(x * 32512 / scalevn))
         # SHORT VERTEXNORM;
-        # Why x*32767/scalevn? 32767 is the max size of an short(signed) and you gotta divide it by scalevn to properly scale it(I guess)
+        # Why x*32512/scalevn? 32512 is the max size of an short(signed) and you gotta divide it by scalevn to properly scale it(I guess)
     if max(max(vt), abs(min(vt))) <= 1:
         scalevt = 1
     else:
@@ -67,9 +67,9 @@ def geom(name, v, vn, vt, tri,bindShapeMatrix,jointNames,jointValues,vertexWeigh
     geomData += struct.pack('>H8sbHfI', 8, 'TEXCOORD'.encode('utf-8'), 2, 2, scalevt, int(len(vt) / 2))
     # SHORT STRINGLEN; CHAR[6] STRING; CHAR INDEX; USHORT SHORTSVT; FLOAT SCALEVT; UINT VERTEXTEXCOUNT;
     for x in vt:
-        geomData += struct.pack('>h', int(x * 32767 / scalevt))
+        geomData += struct.pack('>h', int(x * 32512 / scalevt))
         # SHORT VERTEXNORM;
-        # Why x*32767/scalevt? 32767 is the max size of an short(signed) and you gotta divide it by scalevt to properly scale it(I guess)
+        # Why x*32512/scalevt? 32512 is the max size of an short(signed) and you gotta divide it by scalevt to properly scale it(I guess)
     geomData += struct.pack('>b', 1)
     # CHAR HASMATRIX;
     #bindShapeMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
